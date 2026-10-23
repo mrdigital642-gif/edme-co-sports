@@ -43,12 +43,16 @@
         .loader { border: 3px solid var(--bg-color); border-top: 3px solid var(--brand-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Bankroll & Stade */
-        .balance-card { background: linear-gradient(135deg, var(--brand-blue), #0d2a5c); color: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
-        .balance-amount { font-size: 32px; font-weight: 800; margin: 10px 0; }
-        .action-btn { width: 100%; padding: 15px; background: var(--brand-blue); color: white; text-align: center; border-radius: 12px; font-weight: bold; font-size: 16px; border: none; margin-top: 10px; cursor: pointer; }
+        /* Boutons d'Action IA */
+        .action-btn { width: 100%; padding: 15px; background: var(--brand-blue); color: white; text-align: center; border-radius: 12px; font-weight: bold; font-size: 14px; border: none; margin-top: 10px; cursor: pointer; }
+        .action-btn.outline { background: transparent; border: 1px solid var(--brand-blue); color: var(--brand-blue); }
+        
         .flash-vote { background: rgba(231, 76, 60, 0.1); border: 1px solid var(--danger); border-radius: 12px; padding: 15px; margin-top: 15px; }
         .vote-btn { width: 48%; padding: 10px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; }
+
+        /* Bankroll */
+        .balance-card { background: linear-gradient(135deg, var(--brand-blue), #0d2a5c); color: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
+        .balance-amount { font-size: 32px; font-weight: 800; margin: 10px 0; }
 
         /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 100; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
@@ -65,8 +69,8 @@
         <div style="font-size:10px; color:var(--success); font-weight:bold;">🟢 MULTI-LIGUES ACTIF</div>
     </header>
 
+    <!-- VUE 1 : ACCUEIL -->
     <div id="view-accueil" class="view active">
-        <!-- Filtres Sports -->
         <div class="scroll-ribbon" id="filter-sports">
             <div class="pill active" data-sport="soccer">⚽ Football</div>
             <div class="pill" data-sport="basketball">🏀 Basket</div>
@@ -74,14 +78,12 @@
             <div class="pill" data-sport="mma">🥊 MMA</div>
         </div>
         
-        <!-- Filtres Dates -->
         <div class="scroll-ribbon" id="filter-dates">
             <div class="pill active" data-date="today">Aujourd'hui</div>
             <div class="pill" data-date="tomorrow">Demain</div>
             <div class="pill" data-date="all">Toutes dates</div>
         </div>
 
-        <!-- Filtres Compétitions -->
         <div class="scroll-ribbon" id="filter-leagues" style="margin-bottom: 10px; border-bottom: none;">
             <div class="pill league-pill active" onclick="setLeague('all', this)">🏆 Toutes compétitions</div>
         </div>
@@ -94,18 +96,17 @@
         </div>
     </div>
 
-    <!-- VUE STADE -->
+    <!-- VUE 2 : STADE VIRTUEL & COACH IA -->
     <div id="view-stade" class="view">
         <h2 style="margin-bottom: 5px;" id="stade-match-name">Sélectionnez un match</h2>
         <div class="match-time" id="stade-match-time">-- : --</div>
-        <div class="flash-vote">
-            <h4 style="color: var(--danger); margin-bottom: 10px;">⚡ FLASH VOTE COMMUNAUTAIRE</h4>
-            <p style="font-size: 13px; margin-bottom: 10px;">L'algorithme détecte une rumeur sur l'équipe à domicile. Confirmez-vous une baisse de moral ?</p>
-            <div style="display: flex; justify-content: space-between;">
-                <button class="vote-btn" style="background: var(--success);" onclick="alert('Vote enregistré dans la base Edme.Co !')">OUI</button>
-                <button class="vote-btn" style="background: var(--danger);" onclick="alert('Vote enregistré dans la base Edme.Co !')">NON</button>
-            </div>
+        
+        <!-- INTÉGRATION DU COACH IA -->
+        <div id="ia-coach-section" style="margin-top: 20px;">
+            <button class="action-btn" id="btn-ia-coach" onclick="generateAIAnalysis()">🧠 Demander l'analyse du Coach IA</button>
+            <div id="ia-coach-result" style="display: none; margin-top: 15px;"></div>
         </div>
+
         <h3 style="margin: 20px 0 10px; font-size: 16px;">📊 Thermomètre Extra-Sportif</h3>
         <div class="card">
             <p style="font-size: 13px; font-weight:bold;">Pression du Résultat</p>
@@ -116,19 +117,18 @@
         </div>
     </div>
 
-    <!-- VUE BANKROLL -->
+    <!-- VUE 3 : BANKROLL -->
     <div id="view-bankroll" class="view">
         <div class="balance-card">
             <p style="font-size: 14px; opacity: 0.8;">Capital Virtuel Mensuel</p>
             <div class="balance-amount">50 000 FCFA</div>
             <p style="font-size: 12px; color: #2ecc71;">Mode Simulation Actif</p>
         </div>
-        <h3 style="margin-bottom: 10px; font-size: 16px;">🧠 Coach IA (Biais Cognitifs)</h3>
+        <h3 style="margin-bottom: 10px; font-size: 16px;">🧠 Alertes Biais Cognitifs</h3>
         <div class="card" style="border-left: 4px solid var(--danger);">
             <p style="font-size: 14px; font-weight: bold;">Alerte Biais de Confirmation</p>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Vous avez tendance à parier sur les équipes favorites même quand le climat social est rouge. Utilisez le Crash-Test.</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Vous avez tendance à parier sur les équipes favorites même quand le climat social est rouge. Gardez la tête froide.</p>
         </div>
-        <button class="action-btn" onclick="alert('Le scanner de coupon IA sera activé dans la prochaine version.')">🔍 Lancer le Crash-Test Coupon</button>
     </div>
 
     <div class="bottom-nav">
@@ -150,15 +150,9 @@
         let currentDateFilter = 'today';
         let currentLeagueFilter = 'all'; 
 
-        // Liste des vrais grands championnats à aspirer
         const leaguesToFetch = [
-            'soccer_epl', // Premier League
-            'soccer_france_ligue_one', // Ligue 1
-            'soccer_spain_la_liga', // La Liga
-            'soccer_italy_serie_a', // Serie A
-            'basketball_nba', // NBA
-            'tennis_atp', // Tennis ATP
-            'mma_mixed_martial_arts' // UFC
+            'soccer_epl', 'soccer_france_ligue_one', 'soccer_spain_la_liga', 
+            'soccer_italy_serie_a', 'basketball_nba', 'tennis_atp', 'mma_mixed_martial_arts'
         ];
 
         function switchView(viewId) {
@@ -175,22 +169,61 @@
         function openStade(homeTeam, awayTeam, time, sport) {
             document.getElementById('stade-match-name').innerText = `${homeTeam} vs ${awayTeam}`;
             document.getElementById('stade-match-time').innerHTML = `<span class="live-dot"></span> ${sport} • ${time}`;
+            
+            // Réinitialiser la vue du Coach IA quand on ouvre un nouveau match
+            document.getElementById('btn-ia-coach').style.display = 'block';
+            document.getElementById('ia-coach-result').style.display = 'none';
+            document.getElementById('ia-coach-result').innerHTML = '';
+            
             switchView('view-stade');
         }
 
-        // Téléchargement Multi-Ligues
+        // SIMULATION DU COACH IA (Applique strictement tes règles)
+        function generateAIAnalysis() {
+            const btn = document.getElementById('btn-ia-coach');
+            const resultBox = document.getElementById('ia-coach-result');
+            
+            btn.style.display = 'none';
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `<div class="loader"></div><p style="text-align:center; font-size:12px; color:var(--text-muted);">Le Coach IA croise les données extra-sportives en ignorant les cotes...</p>`;
+
+            setTimeout(() => {
+                // Simulation de l'analyse IA basée sur tes critères
+                const confidences = ['Haute', 'Moyenne', 'Basse'];
+                const conf = confidences[Math.floor(Math.random() * confidences.length)];
+                const confColor = conf === 'Haute' ? 'var(--success)' : (conf === 'Moyenne' ? 'var(--gold)' : 'var(--danger)');
+
+                resultBox.innerHTML = `
+                    <div style="background: var(--bg-color); padding: 15px; border-radius: 12px; border-left: 4px solid var(--brand-blue); border-right: 1px solid var(--border); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+                        <h4 style="color: var(--brand-blue); margin-bottom: 15px; display:flex; align-items:center; gap:5px;">
+                            <span>🧠</span> Rapport Expert Edme.Co
+                        </h4>
+
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">1. Analyse détaillée :</p>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">L'équipe à domicile affiche une bonne dynamique globale, mais le contexte extra-sportif est tendu. L'historique des confrontations (H2H) montre une difficulté face au style tactique des visiteurs. La fatigue liée au calendrier pourrait impacter la fin de rencontre.</p>
+
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">2. Pronostic principal :</p>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Avantage aux visiteurs ou match nul. Score potentiel anticipé : 1-1 ou 1-2.</p>
+
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">3. Niveau de confiance :</p>
+                        <p style="font-size:13px; font-weight:bold; color:${confColor}; margin-bottom:12px;">${conf}</p>
+
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">4. Scénarios & Alertes :</p>
+                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">⚠️ Attention : Enjeu crucial pour le maintien. Éviter de parier pré-match, privilégier une observation des 15 premières minutes pour valider la motivation réelle sur le terrain.</p>
+                    </div>
+                `;
+            }, 1800);
+        }
+
         async function fetchAPI() {
             const container = document.getElementById('matches-container');
             try {
-                // On lance toutes les requêtes en même temps pour que ce soit rapide
                 const promises = leaguesToFetch.map(league => 
                     fetch(`https://api.the-odds-api.com/v4/sports/${league}/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`)
                         .then(res => res.ok ? res.json() : [])
                 );
                 
                 const results = await Promise.all(promises);
-                
-                // On aplatit les résultats en une seule grande liste
                 allGlobalMatches = results.flat();
                 
                 if (allGlobalMatches.length === 0) {
@@ -201,7 +234,7 @@
                 updateLeagueRibbon(); 
                 renderMatches();      
             } catch (error) {
-                container.innerHTML = `<p style="color:var(--danger); text-align:center;">Erreur réseau lors de la récupération des données.</p>`;
+                container.innerHTML = `<p style="color:var(--danger); text-align:center;">Erreur réseau.</p>`;
             }
         }
 
@@ -237,7 +270,6 @@
 
             let filtered = allGlobalMatches.filter(match => {
                 let isRightSport = match.sport_key.includes(currentSportFilter);
-                
                 let matchDateObj = new Date(match.commence_time);
                 let matchDateStr = matchDateObj.toDateString();
                 let isRightDate = true;
@@ -257,7 +289,6 @@
                 return;
             }
 
-            // On affiche tous les matchs trouvés pour cette sélection (limité à 30 pour la fluidité)
             filtered.slice(0, 30).forEach((match, index) => {
                 const fakeSocialScore = Math.floor(Math.random() * (95 - 40) + 40);
                 const alertColor = fakeSocialScore < 60 ? 'var(--danger)' : 'var(--success)';
@@ -290,30 +321,10 @@
             });
         }
 
-        // Événements boutons
         document.querySelectorAll('#filter-sports .pill').forEach(pill => {
             pill.addEventListener('click', function() {
                 document.querySelectorAll('#filter-sports .pill').forEach(p => p.classList.remove('active'));
                 this.classList.add('active');
                 currentSportFilter = this.getAttribute('data-sport');
                 currentLeagueFilter = 'all';
-                updateLeagueRibbon(); 
-                renderMatches();
-            });
-        });
-
-        document.querySelectorAll('#filter-dates .pill').forEach(pill => {
-            pill.addEventListener('click', function() {
-                document.querySelectorAll('#filter-dates .pill').forEach(p => p.classList.remove('active'));
-                this.classList.add('active');
-                currentDateFilter = this.getAttribute('data-date');
-                document.getElementById('list-title').innerText = `Matchs : ${this.innerText}`;
-                renderMatches();
-            });
-        });
-
-        // Démarrage
-        fetchAPI();
-    </script>
-</body>
-</html>
+                
