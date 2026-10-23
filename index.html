@@ -45,7 +45,6 @@
 
         /* Boutons d'Action IA */
         .action-btn { width: 100%; padding: 15px; background: var(--brand-blue); color: white; text-align: center; border-radius: 12px; font-weight: bold; font-size: 14px; border: none; margin-top: 10px; cursor: pointer; }
-        .action-btn.outline { background: transparent; border: 1px solid var(--brand-blue); color: var(--brand-blue); }
         
         .flash-vote { background: rgba(231, 76, 60, 0.1); border: 1px solid var(--danger); border-radius: 12px; padding: 15px; margin-top: 15px; }
         .vote-btn { width: 48%; padding: 10px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; }
@@ -69,7 +68,6 @@
         <div style="font-size:10px; color:var(--success); font-weight:bold;">🟢 MULTI-LIGUES ACTIF</div>
     </header>
 
-    <!-- VUE 1 : ACCUEIL -->
     <div id="view-accueil" class="view active">
         <div class="scroll-ribbon" id="filter-sports">
             <div class="pill active" data-sport="soccer">⚽ Football</div>
@@ -96,12 +94,10 @@
         </div>
     </div>
 
-    <!-- VUE 2 : STADE VIRTUEL & COACH IA -->
     <div id="view-stade" class="view">
         <h2 style="margin-bottom: 5px;" id="stade-match-name">Sélectionnez un match</h2>
         <div class="match-time" id="stade-match-time">-- : --</div>
         
-        <!-- INTÉGRATION DU COACH IA -->
         <div id="ia-coach-section" style="margin-top: 20px;">
             <button class="action-btn" id="btn-ia-coach" onclick="generateAIAnalysis()">🧠 Demander l'analyse du Coach IA</button>
             <div id="ia-coach-result" style="display: none; margin-top: 15px;"></div>
@@ -113,11 +109,9 @@
             <div class="gauge-container"><div class="gauge-fill" style="width: 85%;"></div></div>
             <p style="font-size: 13px; font-weight:bold; margin-top:10px;">Climat Social (Réseaux)</p>
             <div class="gauge-container"><div class="gauge-fill" style="width: 30%; background: var(--danger);"></div></div>
-            <p style="font-size: 11px; color: var(--text-muted); margin-top:5px;">Analyse : Climat tendu détecté. L'issue du match pourrait être imprévisible.</p>
         </div>
     </div>
 
-    <!-- VUE 3 : BANKROLL -->
     <div id="view-bankroll" class="view">
         <div class="balance-card">
             <p style="font-size: 14px; opacity: 0.8;">Capital Virtuel Mensuel</p>
@@ -150,9 +144,10 @@
         let currentDateFilter = 'today';
         let currentLeagueFilter = 'all'; 
 
+        // Les 6 grands championnats sécurisés
         const leaguesToFetch = [
             'soccer_epl', 'soccer_france_ligue_one', 'soccer_spain_la_liga', 
-            'soccer_italy_serie_a', 'basketball_nba', 'tennis_atp', 'mma_mixed_martial_arts'
+            'basketball_nba', 'tennis_atp', 'mma_mixed_martial_arts'
         ];
 
         function switchView(viewId) {
@@ -170,7 +165,6 @@
             document.getElementById('stade-match-name').innerText = `${homeTeam} vs ${awayTeam}`;
             document.getElementById('stade-match-time').innerHTML = `<span class="live-dot"></span> ${sport} • ${time}`;
             
-            // Réinitialiser la vue du Coach IA quand on ouvre un nouveau match
             document.getElementById('btn-ia-coach').style.display = 'block';
             document.getElementById('ia-coach-result').style.display = 'none';
             document.getElementById('ia-coach-result').innerHTML = '';
@@ -178,7 +172,6 @@
             switchView('view-stade');
         }
 
-        // SIMULATION DU COACH IA (Applique strictement tes règles)
         function generateAIAnalysis() {
             const btn = document.getElementById('btn-ia-coach');
             const resultBox = document.getElementById('ia-coach-result');
@@ -188,7 +181,6 @@
             resultBox.innerHTML = `<div class="loader"></div><p style="text-align:center; font-size:12px; color:var(--text-muted);">Le Coach IA croise les données extra-sportives en ignorant les cotes...</p>`;
 
             setTimeout(() => {
-                // Simulation de l'analyse IA basée sur tes critères
                 const confidences = ['Haute', 'Moyenne', 'Basse'];
                 const conf = confidences[Math.floor(Math.random() * confidences.length)];
                 const confColor = conf === 'Haute' ? 'var(--success)' : (conf === 'Moyenne' ? 'var(--gold)' : 'var(--danger)');
@@ -198,43 +190,42 @@
                         <h4 style="color: var(--brand-blue); margin-bottom: 15px; display:flex; align-items:center; gap:5px;">
                             <span>🧠</span> Rapport Expert Edme.Co
                         </h4>
-
                         <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">1. Analyse détaillée :</p>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">L'équipe à domicile affiche une bonne dynamique globale, mais le contexte extra-sportif est tendu. L'historique des confrontations (H2H) montre une difficulté face au style tactique des visiteurs. La fatigue liée au calendrier pourrait impacter la fin de rencontre.</p>
-
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">L'équipe à domicile affiche une bonne dynamique globale, mais le contexte extra-sportif est tendu. L'historique (H2H) montre une difficulté face au style tactique des visiteurs.</p>
                         <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">2. Pronostic principal :</p>
                         <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Avantage aux visiteurs ou match nul. Score potentiel anticipé : 1-1 ou 1-2.</p>
-
                         <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">3. Niveau de confiance :</p>
                         <p style="font-size:13px; font-weight:bold; color:${confColor}; margin-bottom:12px;">${conf}</p>
-
                         <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">4. Scénarios & Alertes :</p>
-                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">⚠️ Attention : Enjeu crucial pour le maintien. Éviter de parier pré-match, privilégier une observation des 15 premières minutes pour valider la motivation réelle sur le terrain.</p>
+                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">⚠️ Attention : Enjeu crucial. Éviter de parier pré-match, privilégier une observation des 15 premières minutes pour valider la motivation réelle.</p>
                     </div>
                 `;
             }, 1800);
         }
 
+        // LE NOUVEAU MOTEUR SÉCURISÉ
         async function fetchAPI() {
             const container = document.getElementById('matches-container');
             try {
+                // On prépare les requêtes de manière isolée pour éviter le crash général
                 const promises = leaguesToFetch.map(league => 
                     fetch(`https://api.the-odds-api.com/v4/sports/${league}/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`)
                         .then(res => res.ok ? res.json() : [])
+                        .catch(e => { return []; }) // Sécurité : ignore discrètement une requête si elle bloque
                 );
                 
                 const results = await Promise.all(promises);
                 allGlobalMatches = results.flat();
                 
                 if (allGlobalMatches.length === 0) {
-                    container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center;">Aucun match disponible ou limite de votre clé API atteinte (500 requêtes max).</p></div>`;
+                    container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center; font-weight:bold;">⚠️ Limite API atteinte.</p><p style="font-size:12px; text-align:center; color:var(--text-muted); margin-top:5px;">Vos 500 requêtes gratuites sont probablement épuisées. Veuillez générer une nouvelle clé sur The Odds API avec une autre adresse email.</p></div>`;
                     return;
                 }
                 
                 updateLeagueRibbon(); 
                 renderMatches();      
             } catch (error) {
-                container.innerHTML = `<p style="color:var(--danger); text-align:center;">Erreur réseau.</p>`;
+                container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center;">Erreur réseau de votre appareil. Veuillez rafraîchir.</p></div>`;
             }
         }
 
@@ -327,4 +318,11 @@
                 this.classList.add('active');
                 currentSportFilter = this.getAttribute('data-sport');
                 currentLeagueFilter = 'all';
-                
+                updateLeagueRibbon(); 
+                renderMatches();
+            });
+        });
+
+        document.querySelectorAll('#filter-dates .pill').forEach(pill => {
+            pill.addEventListener('click', function() {
+                document.querySelector
