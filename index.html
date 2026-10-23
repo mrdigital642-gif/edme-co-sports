@@ -5,55 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Edme.Co Sports</title>
     <style>
-        /* Variables et Thème */
         :root { --bg-color: #f4f7f6; --surface: #ffffff; --text-main: #111111; --text-muted: #666666; --brand-blue: #1e51aa; --danger: #e74c3c; --success: #2ecc71; --gold: #f39c12; --border: #eeeeee; }
         @media (prefers-color-scheme: dark) { :root { --bg-color: #121212; --surface: #1e1e1e; --text-main: #ffffff; --text-muted: #aaaaaa; --border: #333333; } }
-
-        /* Reset */
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 70px; -webkit-tap-highlight-color: transparent; }
-        
         .hidden { display: none !important; }
         .view { display: none; animation: fadeIn 0.3s ease; padding: 15px; }
         .view.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Header & Nav */
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 20px; font-weight: 800; color: var(--brand-blue); letter-spacing: -0.5px; }
-        
         .scroll-ribbon { display: flex; overflow-x: auto; gap: 8px; padding: 8px 0; scrollbar-width: none; border-bottom: 1px solid var(--border); }
         .scroll-ribbon::-webkit-scrollbar { display: none; }
         .pill { white-space: nowrap; padding: 6px 14px; background: var(--surface); border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
         .pill.active { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
         .pill.league-pill.active { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
-
-        /* Cartes */
         .card { background: var(--surface); border-radius: 16px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); cursor: pointer; }
         .card:active { transform: scale(0.98); }
         .match-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; display: flex; justify-content: space-between;}
         .match-time { font-size: 12px; color: var(--text-muted); margin-bottom: 15px; }
-        
-        /* Composants */
         .gauge-container { height: 8px; background: var(--bg-color); border-radius: 4px; overflow: hidden; margin: 10px 0; }
         .gauge-fill { height: 100%; background: var(--brand-blue); border-radius: 4px; transition: width 0.5s; }
-        .badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; }
         .live-dot { height: 8px; width: 8px; background: var(--danger); border-radius: 50%; display: inline-block; animation: blink 1s infinite; margin-right: 5px; }
         @keyframes blink { 50% { opacity: 0; } }
         .loader { border: 3px solid var(--bg-color); border-top: 3px solid var(--brand-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Boutons d'Action IA */
         .action-btn { width: 100%; padding: 15px; background: var(--brand-blue); color: white; text-align: center; border-radius: 12px; font-weight: bold; font-size: 14px; border: none; margin-top: 10px; cursor: pointer; }
-        
-        .flash-vote { background: rgba(231, 76, 60, 0.1); border: 1px solid var(--danger); border-radius: 12px; padding: 15px; margin-top: 15px; }
-        .vote-btn { width: 48%; padding: 10px; border: none; border-radius: 8px; font-weight: bold; color: white; cursor: pointer; }
-
-        /* Bankroll */
         .balance-card { background: linear-gradient(135deg, var(--brand-blue), #0d2a5c); color: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
         .balance-amount { font-size: 32px; font-weight: 800; margin: 10px 0; }
-
-        /* Bottom Nav */
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--surface); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); z-index: 100; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
         .nav-item { text-align: center; color: var(--text-muted); font-size: 11px; font-weight: 600; flex: 1; cursor: pointer; }
         .nav-item.active { color: var(--brand-blue); }
@@ -65,7 +44,7 @@
 
     <header>
         <div class="logo">Edme.Co Sports</div>
-        <div style="font-size:10px; color:var(--success); font-weight:bold;">🟢 MULTI-LIGUES ACTIF</div>
+        <div id="status-indicator" style="font-size:10px; color:var(--success); font-weight:bold;">🟢 EN LIGNE</div>
     </header>
 
     <div id="view-accueil" class="view active">
@@ -88,9 +67,13 @@
 
         <h3 style="margin: 10px 0 15px 0; font-size: 16px;" id="list-title">Matchs : Aujourd'hui</h3>
         
+        <div id="network-warning" style="display:none; background:rgba(231, 76, 60, 0.1); border:1px solid var(--danger); padding:10px; border-radius:8px; margin-bottom:15px;">
+            <p style="font-size:11px; color:var(--danger); text-align:center; font-weight:bold;">Le réseau a bloqué l'API. Activation du Mode Démo Edme.Co.</p>
+        </div>
+
         <div id="matches-container">
             <div class="loader"></div>
-            <p style="text-align:center; font-size:12px; color:var(--text-muted);">Aspiration des grands championnats en cours...</p>
+            <p style="text-align:center; font-size:12px; color:var(--text-muted);">Connexion aux serveurs...</p>
         </div>
     </div>
 
@@ -121,39 +104,27 @@
         <h3 style="margin-bottom: 10px; font-size: 16px;">🧠 Alertes Biais Cognitifs</h3>
         <div class="card" style="border-left: 4px solid var(--danger);">
             <p style="font-size: 14px; font-weight: bold;">Alerte Biais de Confirmation</p>
-            <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Vous avez tendance à parier sur les équipes favorites même quand le climat social est rouge. Gardez la tête froide.</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Vous avez tendance à parier sur les équipes favorites même quand le climat social est rouge.</p>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <div class="nav-item active" id="nav-accueil" onclick="switchView('view-accueil')">
-            <span class="nav-icon">🏠</span>Accueil
-        </div>
-        <div class="nav-item" id="nav-stade" onclick="switchView('view-stade')">
-            <span class="nav-icon">🏟️</span>Stade
-        </div>
-        <div class="nav-item" id="nav-bankroll" onclick="switchView('view-bankroll')">
-            <span class="nav-icon">💳</span>Bankroll
-        </div>
+        <div class="nav-item active" id="nav-accueil" onclick="switchView('view-accueil')"><span class="nav-icon">🏠</span>Accueil</div>
+        <div class="nav-item" id="nav-stade" onclick="switchView('view-stade')"><span class="nav-icon">🏟️</span>Stade</div>
+        <div class="nav-item" id="nav-bankroll" onclick="switchView('view-bankroll')"><span class="nav-icon">💳</span>Bankroll</div>
     </div>
 
     <script>
         const API_KEY = 'df8f28f7fdda21e97d68e5e8308599da'; 
+        
         let allGlobalMatches = []; 
         let currentSportFilter = 'soccer';
         let currentDateFilter = 'today';
         let currentLeagueFilter = 'all'; 
 
-        // Les 6 grands championnats sécurisés
-        const leaguesToFetch = [
-            'soccer_epl', 'soccer_france_ligue_one', 'soccer_spain_la_liga', 
-            'basketball_nba', 'tennis_atp', 'mma_mixed_martial_arts'
-        ];
-
         function switchView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
-            
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             if(viewId === 'view-accueil') document.getElementById('nav-accueil').classList.add('active');
             if(viewId === 'view-stade') document.getElementById('nav-stade').classList.add('active');
@@ -164,68 +135,73 @@
         function openStade(homeTeam, awayTeam, time, sport) {
             document.getElementById('stade-match-name').innerText = `${homeTeam} vs ${awayTeam}`;
             document.getElementById('stade-match-time').innerHTML = `<span class="live-dot"></span> ${sport} • ${time}`;
-            
             document.getElementById('btn-ia-coach').style.display = 'block';
             document.getElementById('ia-coach-result').style.display = 'none';
             document.getElementById('ia-coach-result').innerHTML = '';
-            
             switchView('view-stade');
         }
 
         function generateAIAnalysis() {
             const btn = document.getElementById('btn-ia-coach');
             const resultBox = document.getElementById('ia-coach-result');
-            
             btn.style.display = 'none';
             resultBox.style.display = 'block';
-            resultBox.innerHTML = `<div class="loader"></div><p style="text-align:center; font-size:12px; color:var(--text-muted);">Le Coach IA croise les données extra-sportives en ignorant les cotes...</p>`;
+            resultBox.innerHTML = `<div class="loader"></div><p style="text-align:center; font-size:12px; color:var(--text-muted);">Le Coach IA analyse les données extra-sportives...</p>`;
 
             setTimeout(() => {
                 const confidences = ['Haute', 'Moyenne', 'Basse'];
                 const conf = confidences[Math.floor(Math.random() * confidences.length)];
                 const confColor = conf === 'Haute' ? 'var(--success)' : (conf === 'Moyenne' ? 'var(--gold)' : 'var(--danger)');
-
                 resultBox.innerHTML = `
-                    <div style="background: var(--bg-color); padding: 15px; border-radius: 12px; border-left: 4px solid var(--brand-blue); border-right: 1px solid var(--border); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-                        <h4 style="color: var(--brand-blue); margin-bottom: 15px; display:flex; align-items:center; gap:5px;">
-                            <span>🧠</span> Rapport Expert Edme.Co
-                        </h4>
+                    <div style="background: var(--bg-color); padding: 15px; border-radius: 12px; border-left: 4px solid var(--brand-blue); border: 1px solid var(--border);">
+                        <h4 style="color: var(--brand-blue); margin-bottom: 15px;">🧠 Rapport Expert Edme.Co</h4>
                         <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">1. Analyse détaillée :</p>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px; line-height:1.4;">L'équipe à domicile affiche une bonne dynamique globale, mais le contexte extra-sportif est tendu. L'historique (H2H) montre une difficulté face au style tactique des visiteurs.</p>
-                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">2. Pronostic principal :</p>
-                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Avantage aux visiteurs ou match nul. Score potentiel anticipé : 1-1 ou 1-2.</p>
-                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">3. Niveau de confiance :</p>
-                        <p style="font-size:13px; font-weight:bold; color:${confColor}; margin-bottom:12px;">${conf}</p>
-                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">4. Scénarios & Alertes :</p>
-                        <p style="font-size:12px; color:var(--text-muted); line-height:1.4;">⚠️ Attention : Enjeu crucial. Éviter de parier pré-match, privilégier une observation des 15 premières minutes pour valider la motivation réelle.</p>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Dynamique stable mais contexte extra-sportif sous tension. Le H2H est défavorable face à ce style de jeu.</p>
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">2. Pronostic :</p>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Avantage visiteurs. Score anticipé : 1-2.</p>
+                        <p style="font-size:13px; font-weight:bold; margin-bottom:5px;">3. Confiance : <span style="color:${confColor};">${conf}</span></p>
                     </div>
                 `;
-            }, 1800);
+            }, 1500);
         }
 
-        // LE NOUVEAU MOTEUR SÉCURISÉ
+        // GENERATEUR DE DONNEES DE SECOURS (Si l'API bloque)
+        function loadFallbackData() {
+            const now = new Date();
+            const tomorrow = new Date(); tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            allGlobalMatches = [
+                { sport_key: 'soccer_france_ligue_one', sport_title: 'Ligue 1 (Demo)', commence_time: now.toISOString(), home_team: 'Paris SG', away_team: 'Olympique Marseille' },
+                { sport_key: 'soccer_epl', sport_title: 'Premier League (Demo)', commence_time: now.toISOString(), home_team: 'Arsenal', away_team: 'Chelsea' },
+                { sport_key: 'soccer_spain_la_liga', sport_title: 'LaLiga (Demo)', commence_time: tomorrow.toISOString(), home_team: 'Real Madrid', away_team: 'FC Barcelona' },
+                { sport_key: 'basketball_nba', sport_title: 'NBA (Demo)', commence_time: now.toISOString(), home_team: 'Los Angeles Lakers', away_team: 'Boston Celtics' },
+                { sport_key: 'tennis_atp', sport_title: 'ATP Roland Garros (Demo)', commence_time: now.toISOString(), home_team: 'C. Alcaraz', away_team: 'J. Sinner' }
+            ];
+            
+            document.getElementById('status-indicator').innerHTML = `🔴 MODE DÉMO`;
+            document.getElementById('status-indicator').style.color = 'var(--danger)';
+            document.getElementById('network-warning').style.display = 'block';
+            
+            updateLeagueRibbon();
+            renderMatches();
+        }
+
         async function fetchAPI() {
-            const container = document.getElementById('matches-container');
             try {
-                // On prépare les requêtes de manière isolée pour éviter le crash général
-                const promises = leaguesToFetch.map(league => 
-                    fetch(`https://api.the-odds-api.com/v4/sports/${league}/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`)
-                        .then(res => res.ok ? res.json() : [])
-                        .catch(e => { return []; }) // Sécurité : ignore discrètement une requête si elle bloque
-                );
+                // Requête simple et rapide
+                const response = await fetch(`https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`);
                 
-                const results = await Promise.all(promises);
-                allGlobalMatches = results.flat();
+                if (!response.ok) throw new Error("API Bloquée ou Limite atteinte");
                 
-                if (allGlobalMatches.length === 0) {
-                    container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center; font-weight:bold;">⚠️ Limite API atteinte.</p><p style="font-size:12px; text-align:center; color:var(--text-muted); margin-top:5px;">Vos 500 requêtes gratuites sont probablement épuisées. Veuillez générer une nouvelle clé sur The Odds API avec une autre adresse email.</p></div>`;
-                    return;
-                }
+                allGlobalMatches = await response.json();
+                
+                if (allGlobalMatches.length === 0) throw new Error("Aucun match");
                 
                 updateLeagueRibbon(); 
                 renderMatches();      
             } catch (error) {
-                container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center;">Erreur réseau de votre appareil. Veuillez rafraîchir.</p></div>`;
+                // En cas d'échec (réseau, blocage pays, clé invalide), on lance le mode anti-crash
+                loadFallbackData();
             }
         }
 
@@ -233,7 +209,6 @@
             const leagueRibbon = document.getElementById('filter-leagues');
             const matchesForSport = allGlobalMatches.filter(m => m.sport_key.includes(currentSportFilter));
             const uniqueLeagues = [...new Set(matchesForSport.map(m => m.sport_title))].sort();
-            
             let html = `<div class="pill league-pill active" onclick="setLeague('all', this)">🏆 Toutes compétitions</div>`;
             uniqueLeagues.forEach(league => {
                 const safeLeague = league.replace(/'/g, "\\'");
@@ -266,24 +241,19 @@
                 let isRightDate = true;
                 if (currentDateFilter === 'today') isRightDate = (matchDateStr === todayStr);
                 if (currentDateFilter === 'tomorrow') isRightDate = (matchDateStr === tomorrowStr);
-                
                 let isRightLeague = true;
-                if (currentLeagueFilter !== 'all') {
-                    isRightLeague = (match.sport_title === currentLeagueFilter);
-                }
-                
+                if (currentLeagueFilter !== 'all') isRightLeague = (match.sport_title === currentLeagueFilter);
                 return isRightSport && isRightDate && isRightLeague;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="card"><p style="text-align:center; color:var(--text-muted);">Aucun match prévu pour cette sélection aujourd'hui.</p></div>`;
+                container.innerHTML = `<div class="card"><p style="text-align:center; color:var(--text-muted);">Aucun match prévu pour cette sélection.</p></div>`;
                 return;
             }
 
-            filtered.slice(0, 30).forEach((match, index) => {
+            filtered.forEach((match, index) => {
                 const fakeSocialScore = Math.floor(Math.random() * (95 - 40) + 40);
                 const alertColor = fakeSocialScore < 60 ? 'var(--danger)' : 'var(--success)';
-                
                 const matchDate = new Date(match.commence_time);
                 const dateOptions = { weekday: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' };
                 const timeString = matchDate.toLocaleDateString('fr-FR', dateOptions);
@@ -292,23 +262,15 @@
                 const safeAway = match.away_team.replace(/'/g, "\\'");
                 const safeSport = match.sport_title.replace(/'/g, "\\'");
 
-                const matchCard = `
+                container.innerHTML += `
                     <div class="card" onclick="openStade('${safeHome}', '${safeAway}', '${timeString}', '${safeSport}')">
                         <div class="match-time" style="color:var(--brand-blue); font-weight:bold;">🏆 ${match.sport_title}</div>
-                        <div class="match-title">
-                            <span>${match.home_team} <br><span style="font-size:11px; color:var(--text-muted);">vs</span> ${match.away_team}</span>
-                        </div>
+                        <div class="match-title"><span>${match.home_team} <br><span style="font-size:11px; color:var(--text-muted);">vs</span> ${match.away_team}</span></div>
                         <div class="match-time">📅 ${timeString}</div>
-                        
-                        <p style="font-size: 13px; font-weight: bold; color: ${alertColor};">
-                            Index Climat Edme.Co : ${fakeSocialScore}%
-                        </p>
-                        <div class="gauge-container">
-                            <div class="gauge-fill" style="width: ${fakeSocialScore}%; background: ${alertColor};"></div>
-                        </div>
+                        <p style="font-size: 13px; font-weight: bold; color: ${alertColor};">Index Climat : ${fakeSocialScore}%</p>
+                        <div class="gauge-container"><div class="gauge-fill" style="width: ${fakeSocialScore}%; background: ${alertColor};"></div></div>
                     </div>
                 `;
-                container.innerHTML += matchCard;
             });
         }
 
@@ -325,4 +287,16 @@
 
         document.querySelectorAll('#filter-dates .pill').forEach(pill => {
             pill.addEventListener('click', function() {
-                document.querySelector
+                document.querySelectorAll('#filter-dates .pill').forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                currentDateFilter = this.getAttribute('data-date');
+                document.getElementById('list-title').innerText = `Matchs : ${this.innerText}`;
+                renderMatches();
+            });
+        });
+
+        // Lancement
+        fetchAPI();
+    </script>
+</body>
+</html>
