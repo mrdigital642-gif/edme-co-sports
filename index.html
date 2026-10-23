@@ -26,7 +26,7 @@
         .scroll-ribbon::-webkit-scrollbar { display: none; }
         .pill { white-space: nowrap; padding: 6px 14px; background: var(--surface); border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--text-muted); border: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
         .pill.active { background: var(--brand-blue); color: white; border-color: var(--brand-blue); }
-        .pill.league-pill.active { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); } /* Différencier les compètes */
+        .pill.league-pill.active { background: var(--text-main); color: var(--bg-color); border-color: var(--text-main); }
 
         /* Cartes */
         .card { background: var(--surface); border-radius: 16px; padding: 16px; margin-bottom: 15px; border: 1px solid var(--border); box-shadow: 0 2px 10px rgba(0,0,0,0.02); cursor: pointer; }
@@ -34,7 +34,7 @@
         .match-title { font-size: 15px; font-weight: 700; margin-bottom: 5px; display: flex; justify-content: space-between;}
         .match-time { font-size: 12px; color: var(--text-muted); margin-bottom: 15px; }
         
-        /* Composants visuels */
+        /* Composants */
         .gauge-container { height: 8px; background: var(--bg-color); border-radius: 4px; overflow: hidden; margin: 10px 0; }
         .gauge-fill { height: 100%; background: var(--brand-blue); border-radius: 4px; transition: width 0.5s; }
         .badge { font-size: 10px; font-weight: bold; padding: 4px 8px; border-radius: 6px; }
@@ -43,7 +43,7 @@
         .loader { border: 3px solid var(--bg-color); border-top: 3px solid var(--brand-blue); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin: 20px auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Bankroll & Stade Spécifique */
+        /* Bankroll & Stade */
         .balance-card { background: linear-gradient(135deg, var(--brand-blue), #0d2a5c); color: white; border-radius: 16px; padding: 20px; margin-bottom: 20px; text-align: center; }
         .balance-amount { font-size: 32px; font-weight: 800; margin: 10px 0; }
         .action-btn { width: 100%; padding: 15px; background: var(--brand-blue); color: white; text-align: center; border-radius: 12px; font-weight: bold; font-size: 16px; border: none; margin-top: 10px; cursor: pointer; }
@@ -62,10 +62,9 @@
 
     <header>
         <div class="logo">Edme.Co Sports</div>
-        <div style="font-size:10px; color:var(--success); font-weight:bold;">🟢 API ACTIVE</div>
+        <div style="font-size:10px; color:var(--success); font-weight:bold;">🟢 MULTI-LIGUES ACTIF</div>
     </header>
 
-    <!-- VUE 1 : ACCUEIL -->
     <div id="view-accueil" class="view active">
         <!-- Filtres Sports -->
         <div class="scroll-ribbon" id="filter-sports">
@@ -82,36 +81,34 @@
             <div class="pill" data-date="all">Toutes dates</div>
         </div>
 
-        <!-- NOUVEAU : Filtres Compétitions (Généré dynamiquement) -->
+        <!-- Filtres Compétitions -->
         <div class="scroll-ribbon" id="filter-leagues" style="margin-bottom: 10px; border-bottom: none;">
-            <div class="pill league-pill active" onclick="setLeague('all', this)">🏆 Toutes les compétitions</div>
+            <div class="pill league-pill active" onclick="setLeague('all', this)">🏆 Toutes compétitions</div>
         </div>
 
-        <h3 style="margin: 10px 0 15px 0; font-size: 16px;" id="list-title">Matchs du Jour</h3>
+        <h3 style="margin: 10px 0 15px 0; font-size: 16px;" id="list-title">Matchs : Aujourd'hui</h3>
         
         <div id="matches-container">
             <div class="loader"></div>
-            <p style="text-align:center; font-size:12px; color:var(--text-muted);">Récupération des compétitions mondiales...</p>
+            <p style="text-align:center; font-size:12px; color:var(--text-muted);">Aspiration des grands championnats en cours...</p>
         </div>
     </div>
 
-    <!-- VUE 2 : STADE VIRTUEL -->
+    <!-- VUE STADE -->
     <div id="view-stade" class="view">
         <h2 style="margin-bottom: 5px;" id="stade-match-name">Sélectionnez un match</h2>
         <div class="match-time" id="stade-match-time">-- : --</div>
-
         <div class="flash-vote">
             <h4 style="color: var(--danger); margin-bottom: 10px;">⚡ FLASH VOTE COMMUNAUTAIRE</h4>
             <p style="font-size: 13px; margin-bottom: 10px;">L'algorithme détecte une rumeur sur l'équipe à domicile. Confirmez-vous une baisse de moral ?</p>
             <div style="display: flex; justify-content: space-between;">
-                <button class="vote-btn" style="background: var(--success);" onclick="alert('Vote enregistré dans la base Edme.Co !')">OUI (78%)</button>
-                <button class="vote-btn" style="background: var(--danger);" onclick="alert('Vote enregistré dans la base Edme.Co !')">NON (22%)</button>
+                <button class="vote-btn" style="background: var(--success);" onclick="alert('Vote enregistré dans la base Edme.Co !')">OUI</button>
+                <button class="vote-btn" style="background: var(--danger);" onclick="alert('Vote enregistré dans la base Edme.Co !')">NON</button>
             </div>
         </div>
-
         <h3 style="margin: 20px 0 10px; font-size: 16px;">📊 Thermomètre Extra-Sportif</h3>
         <div class="card">
-            <p style="font-size: 13px; font-weight:bold;">Pression du Résultat (Enjeu)</p>
+            <p style="font-size: 13px; font-weight:bold;">Pression du Résultat</p>
             <div class="gauge-container"><div class="gauge-fill" style="width: 85%;"></div></div>
             <p style="font-size: 13px; font-weight:bold; margin-top:10px;">Climat Social (Réseaux)</p>
             <div class="gauge-container"><div class="gauge-fill" style="width: 30%; background: var(--danger);"></div></div>
@@ -119,24 +116,21 @@
         </div>
     </div>
 
-    <!-- VUE 3 : BANKROLL -->
+    <!-- VUE BANKROLL -->
     <div id="view-bankroll" class="view">
         <div class="balance-card">
             <p style="font-size: 14px; opacity: 0.8;">Capital Virtuel Mensuel</p>
             <div class="balance-amount">50 000 FCFA</div>
             <p style="font-size: 12px; color: #2ecc71;">Mode Simulation Actif</p>
         </div>
-
         <h3 style="margin-bottom: 10px; font-size: 16px;">🧠 Coach IA (Biais Cognitifs)</h3>
         <div class="card" style="border-left: 4px solid var(--danger);">
             <p style="font-size: 14px; font-weight: bold;">Alerte Biais de Confirmation</p>
             <p style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">Vous avez tendance à parier sur les équipes favorites même quand le climat social est rouge. Utilisez le Crash-Test.</p>
         </div>
-
-        <button class="action-btn" onclick="alert('Le scanner de coupon IA sera activé dans la prochaine mise à jour de la base de données.')">🔍 Lancer le Crash-Test Coupon</button>
+        <button class="action-btn" onclick="alert('Le scanner de coupon IA sera activé dans la prochaine version.')">🔍 Lancer le Crash-Test Coupon</button>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <div class="nav-item active" id="nav-accueil" onclick="switchView('view-accueil')">
             <span class="nav-icon">🏠</span>Accueil
@@ -154,9 +148,19 @@
         let allGlobalMatches = []; 
         let currentSportFilter = 'soccer';
         let currentDateFilter = 'today';
-        let currentLeagueFilter = 'all'; // Nouveau filtre pour les compétitions
+        let currentLeagueFilter = 'all'; 
 
-        // 1. Navigation SPA
+        // Liste des vrais grands championnats à aspirer
+        const leaguesToFetch = [
+            'soccer_epl', // Premier League
+            'soccer_france_ligue_one', // Ligue 1
+            'soccer_spain_la_liga', // La Liga
+            'soccer_italy_serie_a', // Serie A
+            'basketball_nba', // NBA
+            'tennis_atp', // Tennis ATP
+            'mma_mixed_martial_arts' // UFC
+        ];
+
         function switchView(viewId) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.getElementById(viewId).classList.add('active');
@@ -170,64 +174,57 @@
 
         function openStade(homeTeam, awayTeam, time, sport) {
             document.getElementById('stade-match-name').innerText = `${homeTeam} vs ${awayTeam}`;
-            document.getElementById('stade-match-time').innerHTML = `<span class="live-dot"></span> Événement : ${sport} • ${time}`;
+            document.getElementById('stade-match-time').innerHTML = `<span class="live-dot"></span> ${sport} • ${time}`;
             switchView('view-stade');
         }
 
-        // 2. Initialisation : Téléchargement des données
+        // Téléchargement Multi-Ligues
         async function fetchAPI() {
             const container = document.getElementById('matches-container');
             try {
-                // Requête globale pour récupérer un maximum de compétitions
-                const response = await fetch(`https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey=${API_KEY}&regions=eu,uk,us&markets=h2h`);
-                allGlobalMatches = await response.json();
+                // On lance toutes les requêtes en même temps pour que ce soit rapide
+                const promises = leaguesToFetch.map(league => 
+                    fetch(`https://api.the-odds-api.com/v4/sports/${league}/odds/?apiKey=${API_KEY}&regions=eu&markets=h2h`)
+                        .then(res => res.ok ? res.json() : [])
+                );
                 
-                if (!response.ok) {
-                    container.innerHTML = `<div class="card"><p style="color:var(--danger);">${allGlobalMatches.message}</p></div>`;
+                const results = await Promise.all(promises);
+                
+                // On aplatit les résultats en une seule grande liste
+                allGlobalMatches = results.flat();
+                
+                if (allGlobalMatches.length === 0) {
+                    container.innerHTML = `<div class="card"><p style="color:var(--danger); text-align:center;">Aucun match disponible ou limite de votre clé API atteinte (500 requêtes max).</p></div>`;
                     return;
                 }
                 
-                updateLeagueRibbon(); // Génère les boutons de compétitions
-                renderMatches();      // Affiche les matchs
+                updateLeagueRibbon(); 
+                renderMatches();      
             } catch (error) {
-                container.innerHTML = `<p style="color:var(--danger); text-align:center;">Erreur réseau.</p>`;
+                container.innerHTML = `<p style="color:var(--danger); text-align:center;">Erreur réseau lors de la récupération des données.</p>`;
             }
         }
 
-        // 3. NOUVEAU : Générer dynamiquement les boutons de compétitions (Ligue 1, NBA, etc.)
         function updateLeagueRibbon() {
             const leagueRibbon = document.getElementById('filter-leagues');
-            
-            // Trouver tous les matchs correspondant au sport actuel (Foot, Basket...)
             const matchesForSport = allGlobalMatches.filter(m => m.sport_key.includes(currentSportFilter));
-            
-            // Extraire uniquement les noms de championnats uniques
             const uniqueLeagues = [...new Set(matchesForSport.map(m => m.sport_title))].sort();
             
-            // Reconstruire le ruban HTML
             let html = `<div class="pill league-pill active" onclick="setLeague('all', this)">🏆 Toutes compétitions</div>`;
             uniqueLeagues.forEach(league => {
-                // Échapper les apostrophes (ex: Women's League)
                 const safeLeague = league.replace(/'/g, "\\'");
                 html += `<div class="pill league-pill" onclick="setLeague('${safeLeague}', this)">${league}</div>`;
             });
-            
             leagueRibbon.innerHTML = html;
         }
 
-        // 4. Fonction pour quand l'utilisateur clique sur une compétition spécifique
         function setLeague(league, element) {
             currentLeagueFilter = league;
-            
-            // Gérer le changement de couleur visuel
             document.querySelectorAll('.league-pill').forEach(p => p.classList.remove('active'));
             element.classList.add('active');
-            
-            // Rafraîchir l'affichage des matchs
             renderMatches();
         }
 
-        // 5. Filtrer et afficher les matchs
         function renderMatches() {
             const container = document.getElementById('matches-container');
             container.innerHTML = '';
@@ -239,17 +236,14 @@
             const tomorrowStr = tomorrow.toDateString();
 
             let filtered = allGlobalMatches.filter(match => {
-                // Vérifier le sport
                 let isRightSport = match.sport_key.includes(currentSportFilter);
                 
-                // Vérifier la date
                 let matchDateObj = new Date(match.commence_time);
                 let matchDateStr = matchDateObj.toDateString();
                 let isRightDate = true;
                 if (currentDateFilter === 'today') isRightDate = (matchDateStr === todayStr);
                 if (currentDateFilter === 'tomorrow') isRightDate = (matchDateStr === tomorrowStr);
                 
-                // Vérifier la compétition (Nouveau)
                 let isRightLeague = true;
                 if (currentLeagueFilter !== 'all') {
                     isRightLeague = (match.sport_title === currentLeagueFilter);
@@ -259,12 +253,12 @@
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div class="card"><p style="text-align:center; color:var(--text-muted);">Aucun match prévu pour cette sélection.</p></div>`;
+                container.innerHTML = `<div class="card"><p style="text-align:center; color:var(--text-muted);">Aucun match prévu pour cette sélection aujourd'hui.</p></div>`;
                 return;
             }
 
-            // Afficher les 20 premiers matchs de la sélection pour ne pas figer le téléphone
-            filtered.slice(0, 20).forEach((match, index) => {
+            // On affiche tous les matchs trouvés pour cette sélection (limité à 30 pour la fluidité)
+            filtered.slice(0, 30).forEach((match, index) => {
                 const fakeSocialScore = Math.floor(Math.random() * (95 - 40) + 40);
                 const alertColor = fakeSocialScore < 60 ? 'var(--danger)' : 'var(--success)';
                 
@@ -296,16 +290,14 @@
             });
         }
 
-        // 6. Activer les menus Sport et Date
+        // Événements boutons
         document.querySelectorAll('#filter-sports .pill').forEach(pill => {
             pill.addEventListener('click', function() {
                 document.querySelectorAll('#filter-sports .pill').forEach(p => p.classList.remove('active'));
                 this.classList.add('active');
                 currentSportFilter = this.getAttribute('data-sport');
-                
-                // Réinitialiser le filtre de compétition sur "Toutes"
                 currentLeagueFilter = 'all';
-                updateLeagueRibbon(); // Recréer les boutons de compétitions pour ce nouveau sport
+                updateLeagueRibbon(); 
                 renderMatches();
             });
         });
